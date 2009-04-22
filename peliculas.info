@@ -1,0 +1,6 @@
+; $Id$
+name = Peliculas
+description = Almacén de películas e importación.
+core = 6.x
+version = 1.0
+package = Cafoch

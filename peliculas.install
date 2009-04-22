@@ -1,0 +1,80 @@
+<?php
+/**
+ * Implementation of hook_install().
+ */
+function peliculas_install() {
+  switch ($GLOBALS['db_type']) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("CREATE TABLE {peliculas} (
+        vid int(10) unsigned NOT NULL default '0',
+        nid int(10) unsigned NOT NULL default '0',
+        id_director int(10) unsigned NOT NULL default '0',
+        mi_valoracion int(10) unsigned NOT NULL default '0',
+        critica_valoracion int(10) unsigned NOT NULL default '0',
+        ano int(10) unsigned NOT NULL default '0',
+        pais varchar(50) NOT NULL default '',
+        almacen int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (vid, nid)
+      ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      
+      db_query("CREATE TABLE {peliculas_gen_inter} (
+        id_pelicula int(10) unsigned NOT NULL default '0',
+        id_genero int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (id_pelicula, id_genero)
+      ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      
+      db_query("CREATE TABLE {peliculas_act_inter} (
+        id_pelicula int(10) unsigned NOT NULL default '0',
+        id_actor int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (id_pelicula, id_actor)
+      ) /*!40100 DEFAULT CHARACTER SET UTF8 */ ");
+      break;
+    case 'pgsql':
+      db_query("CREATE TABLE {peliculas} (
+        vid int(10) unsigned NOT NULL default '0',
+        nid int(10) unsigned NOT NULL default '0',
+        id_director int(10) unsigned NOT NULL default '0',
+        mi_valoracion int(10) unsigned NOT NULL default '0',
+        critica_valoracion int(10) unsigned NOT NULL default '0',
+        ano int(10) unsigned NOT NULL default '0',
+        pais varchar(50) NOT NULL default '',
+        almacen int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (vid, nid)
+      ) ");
+      
+      db_query("CREATE TABLE {peliculas_gen_inter} (
+        id_pelicula int(10) unsigned NOT NULL default '0',
+        id_genero int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (id_pelicula, id_genero)
+      ) ");
+      
+      db_query("CREATE TABLE {peliculas_act_inter} (
+        id_pelicula int(10) unsigned NOT NULL default '0',
+        id_actor int(10) unsigned NOT NULL default '0',
+        PRIMARY KEY (id_pelicula, id_actor)
+      ) ");
+      
+      break;
+  }
+  drupal_set_message("Las tablas de peliculas han sido creadas.");
+  
+  variable_set('node_options_peliculas', array('status'));
+  variable_set('comment_peliculas', COMMENT_NODE_DISABLED);
+  variable_set('upload_peliculas', 0);
+
+  // No mostrar la fecha ni el autor el los nodos bop por defecto
+  $theme_settings = variable_get('theme_settings', array());
+  $theme_settings['toggle_node_info_peliculas'] = FALSE;
+  variable_set('theme_settings', $theme_settings);  
+}
+
+/**
+ * Implementation of hook_uninstall().
+ */
+function peliculas_uninstall() {
+  drupal_set_message("Las tablas han sido borradas.");
+  db_query('DROP TABLE {peliculas}');
+  db_query('DROP TABLE {peliculas_gen_inter}');
+  db_query('DROP TABLE {peliculas_act_inter}');
+}
